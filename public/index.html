@@ -1,112 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset=utf-8>
-  <title>App</title>
-  <link rel="stylesheet" href="/application.css" type="text/css" charset="utf-8">
-  <script src="/application.js" type="text/javascript" charset="utf-8"></script>
-  <script type="text/javascript" charset="utf-8">
-    var jQuery  = require("jqueryify");
-    var exports = this;
-    jQuery(function(){
-      var App = require("index");
-      exports.app = new App({el: $("body")});      
-    });
-  </script>
-  
+  <head>
+    <meta charset=utf-8>
+    <title>App</title>
+    <link rel="stylesheet" href="/application.css" type="text/css" charset="utf-8">
+    <script src="/application.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      var jQuery  = require("jqueryify");
+      var exports = this;
+      jQuery(function(){
+          var App = require("index");
+          exports.app = new App({el: $("#page")});      
+          });
+</script>
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+
 </head>
 <body>
-  <!--
-<div id="wrapper">
-	<div id="menu-wrapper">
-		<div id="menu" class="container">
-			<ul>
-				<li class="current_page_item"><a href="#">Homepage</a></li>
-				<li><a href="#">Services</a></li>
-				<li><a href="#">Blog</a></li>
-				<li><a href="#">Photos</a></li>
-				<li><a href="#">About Us</a></li>
-				<li><a href="#">Links</a></li>
-				<li><a href="#">Contact Us</a></li>
-			</ul>
-		</div>
-	</div>
-	<div id="logo" class="container">
-		<h1><a href="#">WaterPainting </a></h1>
-		<p>In posuere eleifend odio quisque semper augue.</p>
-	</div>
-	<div id="banner-wrapper">
-		<div class="container"><img src="images/pic01.jpg" width="1200" height="460" alt="" /></div>
-	</div>
-	<div id="page" class="container">
-		<div id="content">
-			<div class="post">
-				<h2 class="title"><a href="#">Fusce ultrices fringilla metus</a></h2>
-				<div class="entry">
-					<p><img src="images/pic02.jpg" alt="" width="360" height="160" class="alignleft" />This is <strong>WaterPainting </strong>, a free, fully standards-compliant CSS template designed by <a href="http://www.freecsstemplates.org">FCT</a>.     The photos in this template are from <a href="http://fotogrph.com/"> Fotogrph</a>. This free template is released under a <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attributions 3.0</a> license, so you are pretty much free to do whatever you want with it (even use it commercially) provided you keep the links in the footer intact. Aside from that, have fun with it :) </p>
-<p>Sed lacus. Donec lectus. Nullam pretium nibh ut turpis. Nam bibendum. In nulla tortor, elementum vel, tempor at, varius non, purus. Mauris vitae nisl nec metus placerat consectetuer. Donec ipsum. Proin imperdiet est. Phasellus <a href="#">dapibus semper urna</a>. Pellentesque ornare, orci in consectetuer hendrerit, urna elit eleifend nunc, ut consectetuer nisl felis ac diam. Etiam non felis. Donec ut ante. In id eros. Suspendisse lacus turpis,  egestas at sem.  Mauris quam enim,  in, rhoncus ut, lobortis a, est. Pellentesque ornare, orci in consectetuer hendrerit, urna elit eleifend nunc, ut consectetuer. Pellentesque viverra vulputate enim. Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus.</p></div>
-			</div>
-			<div style="clear: both;">&nbsp;</div>
-		</div>
-		<- end #content >
-		<div id="sidebar">
-			<div>
-				<h2>Nulla luctus eleifend</h2>
-				<ul class="list-style2">
-					<li class="first"><a href="#">Pellentesque quis elit non lectus gravida blandit.</a></li>
-					<li><a href="#">Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</a></li>
-					<li><a href="#">Phasellus nec erat sit amet nibh pellentesque congue.</a></li>
-					<li><a href="#">Cras vitae metus aliquam risus pellentesque pharetra.</a></li>
-					<li><a href="#">Phasellus nec erat sit amet nibh pellentesque congue.</a></li>
-					<li><a href="#">Maecenas vitae orci vitae tellus feugiat eleifend.</a></li>
-					<li><a href="#">Phasellus nec erat sit amet nibh pellentesque congue.</a></li>
-					<li><a href="#">Cras vitae metus aliquam risus pellentesque pharetra.</a></li>
-					<li><a href="#">Phasellus nec erat sit amet nibh pellentesque congue.</a></li>
-				</ul>
-			</div>
-		</div>
-		<- end #sidebar >
-		<div style="clear: both;">&nbsp;</div>
-	</div>
-	<- end #page ->
-</div>
-<div id="footer-bg">
-	<div id="footer-content" class="container">
-		<div id="column1">
-			<h2>Tellus feugiat eleifend</h2>
-			<ul class="list-style2">
-				<li class="first"><a href="#">Pellentesque quis elit non lectus gravida blandit.</a></li>
-				<li><a href="#">Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</a></li>
-				<li><a href="#">Phasellus nec erat sit amet nibh pellentesque congue.</a></li>
-				<li><a href="#">Cras vitae metus aliquam risus pellentesque pharetra.</a></li>
-				<li><a href="#">Maecenas vitae orci vitae tellus feugiat eleifend.</a></li>
-			</ul>
-		</div>
-		<div id="column2">
-			<h2>Etiam rhoncus volutpat</h2>
-			<ul class="list-style2">
-				<li class="first"><a href="#">Pellentesque quis elit non lectus gravida blandit.</a></li>
-				<li><a href="#">Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</a></li>
-				<li><a href="#">Phasellus nec erat sit amet nibh pellentesque congue.</a></li>
-				<li><a href="#">Cras vitae metus aliquam risus pellentesque pharetra.</a></li>
-				<li><a href="#">Maecenas vitae orci vitae tellus feugiat eleifend.</a></li>
-			</ul>
-		</div>
-		<div id="column3">
-			<h2>Recommended Links</h2>
-			<ul class="list-style2">
-				<li class="first"><a href="#">Pellentesque quis elit non lectus gravida blandit.</a></li>
-				<li><a href="#">Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</a></li>
-				<li><a href="#">Phasellus nec erat sit amet nibh pellentesque congue.</a></li>
-				<li><a href="#">Cras vitae metus aliquam risus pellentesque pharetra.</a></li>
-				<li><a href="#">Maecenas vitae orci vitae tellus feugiat eleifend.</a></li>
-			</ul>
-		</div>
-	</div>
-</div>
-<div id="footer">
-	<p>© 2012 Untitled Inc. All rights reserved. Lorem ipsum dolor sit amet nullam blandit consequat phasellus etiam lorem. Design by <a href="http://www.freecsstemplates.org">FCT</a>.  Photos by <a href="http://fotogrph.com/">Fotogrph</a>.</p>
-</div>
--->
+  <div id="page" data-role="page">
+    <div id="header" data-role="header">
+    </div>
+    <div id="content" data-role="content">	
+    </div><!-- /content -->
+  </div>
 </body>
 </html>

@@ -10,6 +10,7 @@
     "spine/lib/manager"
   ],
   "libs": [
-    "./lib/processing-1.4.1.js"  
+    "./lib/processing-1.4.1.js"
   ]
+
 }
