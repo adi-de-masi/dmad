@@ -11,22 +11,23 @@ class App extends Spine.Controller
 
   constructor: ->
     super
-    @bindJqueryMobileEvents()
+    @setupJquerymobile()
     @landings = new Landings el:@el
     @beasts = new Beasts el:@el
     @clocks = new Clocks el:@el
 
     @landings.active()
 
-  bindJqueryMobileEvents: ->
+  setupJquerymobile: ->
+    $.mobile.changePage.defaults.allowSamePageTransition = true
     $doc.bind "pagebeforechange", (e, jqmData) =>
       @log "pagebeforechange event!"
       if hashRegexp.test jqmData.toPage
+        e.preventDefault()
         target = hashRegexp.exec jqmData.toPage
         unless target?.length is 1
           throw new Error "chume noed drus"
         @dispatch target[0], jqmData
-        e.preventDefault()
 
   dispatch: (target, jqmData) ->
     @log "going to #{target}"
@@ -34,9 +35,11 @@ class App extends Spine.Controller
       @beasts.active()
     else if target is "#clocks"
       @clocks.active()
+      $page = @clocks.el
+      $.mobile.changePage( $page, jqmData.options)
     else if target is "#landing"
       @landings.active()
-    @el.trigger "create"
+      #@el.trigger "create"
 
 
 module.exports = App

@@ -6,7 +6,6 @@ class Headers extends Spine.Controller
     @active @render
 
   render: ->
-    @el.empty()
     @html require('views/header')(@)
 
   getTitle: ->
