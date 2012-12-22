@@ -20,26 +20,53 @@ class App extends Spine.Controller
 
   setupJquerymobile: ->
     $.mobile.changePage.defaults.allowSamePageTransition = true
+    $.mobile.defaultPageTransition = "none"
+
     $doc.bind "pagebeforechange", (e, jqmData) =>
       @log "pagebeforechange event!"
-      if hashRegexp.test jqmData.toPage
-        e.preventDefault()
-        target = hashRegexp.exec jqmData.toPage
-        unless target?.length is 1
-          throw new Error "chume noed drus"
-        @dispatch target[0], jqmData
+      if typeof jqmData.toPage is "string"
+        # an explicit hash change event
+        if hashRegexp.test jqmData.toPage
+          target = @extractTarget(jqmData)
+          @dispatch target[0], jqmData
+          e.preventDefault()
+        else
+          @dispatch "#landing", jqmData
+          e.preventDefault()
+        # an url that contained a hash was entered by hand
+        #else if (jqmData?.toPage?.context?.URL?)
+        #  jqmData.toPage = "#{jqmData.toPage.context.URL}"
+        #  target = @extractTarget(jqmData)
+        #  @dispatch target[0], jqmData
+        #  e.preventDefault()
+
+  extractTarget: (jqmData) ->
+    result = hashRegexp.exec jqmData.toPage
+    if result?.length is 1
+      return result
+    else if result is null
+      return ["#landing"]
+    else if result?.length > 1
+      throw new Error "chume noed drus"
+
 
   dispatch: (target, jqmData) ->
-    @log "going to #{target}"
+    url = $.mobile.path.parseUrl( jqmData.toPage )
+    jqmData.options.dataUrl = url.href
+    @log "going to #{url.href}"
     if target is "#beast"
-      @beasts.active()
+      @changePage @beasts, jqmData
     else if target is "#clocks"
-      @clocks.active()
-      $page = @clocks.el
-      $.mobile.changePage( $page, jqmData.options)
+      @changePage @clocks, jqmData
     else if target is "#landing"
-      @landings.active()
-      #@el.trigger "create"
+      @changePage @landings, jqmData
+
+    @el.trigger "create"
+
+  changePage: (controller, jqmData) ->
+    controller.active()
+    $page = controller.el
+    $.mobile.changePage( $page, jqmData.options )
 
 
 module.exports = App

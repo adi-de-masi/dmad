@@ -9,7 +9,7 @@ class Clocks extends Spine.Controller
 
   constructor: ->
     super
-    @headers = new Headers el:@header, title:"Die Uhr von Welt" 
+    @headers = new Headers el:@header, title:"Die Uhr von Welt", back:true 
     @timeCanvas = new TimeCanvas el:@content
     @active @render
 

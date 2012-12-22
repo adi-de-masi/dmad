@@ -6,7 +6,11 @@ class Headers extends Spine.Controller
     @active @render
 
   render: ->
-    @html require('views/header')(@)
+    if @back
+      @el.find('#backbutton').toggle(true)
+    else
+       @el.find('#backbutton').toggle(false)
+    @el.find('h1').html "#{@title}"
 
   getTitle: ->
     @title
