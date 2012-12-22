@@ -6,6 +6,6 @@ class Landings extends Spine.Controller
     @active @render
 
   active: ->
-    @html require('views/landing')(@)
+    @append require('views/landing')(@)
     
 module.exports = Landings
