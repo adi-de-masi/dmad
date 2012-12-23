@@ -33,12 +33,6 @@ class App extends Spine.Controller
         else
           @dispatch "#landing", jqmData
           e.preventDefault()
-        # an url that contained a hash was entered by hand
-        #else if (jqmData?.toPage?.context?.URL?)
-        #  jqmData.toPage = "#{jqmData.toPage.context.URL}"
-        #  target = @extractTarget(jqmData)
-        #  @dispatch target[0], jqmData
-        #  e.preventDefault()
 
   extractTarget: (jqmData) ->
     result = hashRegexp.exec jqmData.toPage
