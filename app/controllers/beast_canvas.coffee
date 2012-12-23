@@ -98,7 +98,7 @@ class BeastCanvas extends Spine.Controller
 
   render: ->
     @running = true
-    @html require('views/canvas')(@)
+    @html require('views/beast_canvas')(@)
     canvas = document.getElementById('canvas')  
     @processing = new Processing(canvas, @sketchProc)
     @pauseOrContinueButton.find('ui-label').text('stop')
