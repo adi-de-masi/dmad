@@ -27,19 +27,28 @@ class App extends Spine.Controller
       if typeof jqmData.toPage is "string"
         # an explicit hash change event
         if hashRegexp.test jqmData.toPage
-          target = @extractTarget(jqmData)
-          @dispatch target[0], jqmData
+          target = @extractTarget(jqmData.toPage)
+          @dispatch target, jqmData
           e.preventDefault()
+        # By default, we go to the landing page
         else
           @dispatch "#landing", jqmData
           e.preventDefault()
+      # url containing a hash was entered by hand
+      else if hashRegexp.test jqmData?.toPage?.context?.URL and not jqmData.ficken
+          target = @extractTarget jqmData.toPage.context.URL
+          jqmData.toPage = target
+          jqmData.ficken = true
+          @dispatch target, jqmData
+          e.preventDefault()
 
-  extractTarget: (jqmData) ->
-    result = hashRegexp.exec jqmData.toPage
+
+  extractTarget: (urlString) ->
+    result = hashRegexp.exec urlString
     if result?.length is 1
-      return result
+      return result[0]
     else if result is null
-      return ["#landing"]
+      return "#landing"
     else if result?.length > 1
       throw new Error "chume noed drus"
 

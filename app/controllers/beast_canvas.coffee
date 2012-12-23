@@ -25,12 +25,21 @@ class BeastCanvas extends Spine.Controller
       #p.stroke p.white
       survivors = []
       for beast in window.beasts
-        survivors.push beast.move()
-        beast.draw()
-        console.log "there are #{survivors.length} survivors"
+        movementResult = beast.move()
+        if movementResult instanceof Beast
+          survivors.push movementResult
+          movementResult.draw()
+        else if movementResult is null
+          # beast died
+        else if movementResult instanceof Array and movementResult.length is 2
+          for beast in movementResult
+            survivors.push beast
+            beast.draw()
+        else 
+          console.log "gopfertami"
 
       survivors = $.map(survivors, (x) -> x) # flatten
-      beasts = survivors.filter () -> true # filter nulls
+      window.beasts = survivors.filter () -> true # filter nulls
 
     #p.mouseMoved = () ->
     #  p.stroke 255, 0, 0
