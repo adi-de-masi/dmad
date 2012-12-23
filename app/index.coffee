@@ -2,6 +2,7 @@ require('lib/setup')
 Landings = require('controllers/landings')
 Beasts = require('controllers/beasts')
 Clocks = require('controllers/clocks')
+SmoothIce = require('controllers/smooth_ice')
 
 Spine = require('spine')
 
@@ -15,6 +16,7 @@ class App extends Spine.Controller
     @landings = new Landings el:@el
     @beasts = new Beasts el:@el
     @clocks = new Clocks el:@el
+    @smoothIce = new SmoothIce el:@el
 
     @landings.active()
 
@@ -64,6 +66,9 @@ class App extends Spine.Controller
       @changePage @clocks, jqmData
     else if target is "#landing"
       @changePage @landings, jqmData
+    else if target is "#smooth_ice"
+      @changePage @smoothIce, jqmData
+
 
     @el.trigger "create"
 

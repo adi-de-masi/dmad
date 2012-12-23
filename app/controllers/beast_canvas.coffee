@@ -6,8 +6,7 @@ class BeastCanvas extends Spine.Controller
     "#pauseOrContinueButton": "pauseOrContinueButton"
 
    events:
-     "click #resetButton": "reset",
-    #   "click #pauseOrContinueButton": "pauseOrCancel"
+     "click #resetButton": "reset"
 
   reset: ->
     @render()
@@ -66,12 +65,6 @@ class BeastCanvas extends Spine.Controller
         for beast in window.beasts
           beast.draw()
 
-    #p.mouseMoved = () ->
-    #  p.stroke 255, 0, 0
-    #  p.point(p.mouseX, p.mouseY)
-
-    #p.touchStart = () -> alert 'touch start'
-    #p.touchEnd = () -> alert 'touch end'
     p.touchMove = (e) -> 
       for touch in e.touches
         x = touch.offsetX
