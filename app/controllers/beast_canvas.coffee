@@ -1,12 +1,34 @@
 Spine = require('spine')
 
 class BeastCanvas extends Spine.Controller
-  food = 50
-  window.dx = [0,1,1,1,0,-1,-1,-1]
-  window.dy = [1,1,0,-1,-1,-1,0,1]
+  elements:
+    "#resetButton": "resetButton",
+    "#pauseOrContinueButton": "pauseOrContinueButton"
+
+   events:
+     "click #resetButton": "reset",
+    #   "click #pauseOrContinueButton": "pauseOrCancel"
+
+  reset: ->
+    @render()
+
+  pauseOrCancel: (processing) ->
+    if @running
+      processing.noLoop()
+      @running = false
+      pauseOrContinueLabel = "start"
+    else
+      processing.loop()
+      @running = true 
+      pauseOrContinueLabel = "stop"
+    @pauseOrContinueButton.find('.ui-btn-text').text(pauseOrContinueLabel)
+
+
     
   constructor: ->
     super
+    @running = true
+    @pauseOrContinueLabel = 'stop'
     @active @render
 
   sketchProc: (p) ->
@@ -19,27 +41,30 @@ class BeastCanvas extends Spine.Controller
       p.makeFood(50000)
 
     p.draw = () ->
+      if drawIterations++ % 3 is 0
+        return
       #p.makeFood(50)
       world.draw()
-
       #p.stroke p.white
-      survivors = []
-      for beast in window.beasts
-        movementResult = beast.move()
-        if movementResult instanceof Beast
-          survivors.push movementResult
-          movementResult.draw()
-        else if movementResult is null
-          # beast died
-        else if movementResult instanceof Array and movementResult.length is 2
-          for beast in movementResult
-            survivors.push beast
-            beast.draw()
-        else 
-          console.log "gopfertami"
+      if drawIterations++ % 2 is 0
+        survivors = []
+        for beast in window.beasts
+          movementResult = beast.move()
+          if movementResult instanceof Beast
+            survivors.push movementResult
+            movementResult.draw()
+          else if movementResult is null
+            # beast died
+          else if movementResult instanceof Array and movementResult.length is 2
+            for beast in movementResult
+              survivors.push beast
+              beast.draw()
+        survivors = $.map(survivors, (x) -> x) # flatten
+        window.beasts = survivors.filter () -> true # filter nulls
 
-      survivors = $.map(survivors, (x) -> x) # flatten
-      window.beasts = survivors.filter () -> true # filter nulls
+      else # don't move the beasts
+        for beast in window.beasts
+          beast.draw()
 
     #p.mouseMoved = () ->
     #  p.stroke 255, 0, 0
@@ -65,12 +90,25 @@ class BeastCanvas extends Spine.Controller
         x = Math.floor(p.random(p.width))
         y = Math.floor(p.random(p.height))
         world.set x, y, 20
-
+  food = 50
+  window.dx = [0,1,1,1,0,-1,-1,-1]
+  window.dy = [1,1,0,-1,-1,-1,0,1]
+  drawIterations = 0
+ 
 
   render: ->
-    @html require('views/canvas')
-    canvas = document.getElementById('canvas')
+    @running = true
+    @html require('views/canvas')(@)
+    canvas = document.getElementById('canvas')  
     @processing = new Processing(canvas, @sketchProc)
+    @pauseOrContinueButton.find('ui-label').text('stop')
+    @pauseOrContinueButton.bind('click', => @pauseOrCancel(@processing))
+    @el.trigger "create"
+
+  getPauseOrContinue: ->
+    if @running
+      return "stop"
+    return "start"
 
 class World
   constructor: (@p) ->

@@ -38,7 +38,6 @@ class App extends Spine.Controller
       else if hashRegexp.test(jqmData?.toPage?.context?.URL) and jqmData.options?.redirected is undefined
           target = @extractTarget jqmData.toPage.context.URL
           jqmData.toPage = target
-          jqmData.options.redirected = true
           @dispatch target, jqmData
           e.preventDefault()
       else
@@ -71,6 +70,7 @@ class App extends Spine.Controller
   changePage: (controller, jqmData) ->
     controller.active()
     $page = controller.el
+    jqmData.options.redirected = true
     $.mobile.changePage( $page, jqmData.options )
 
 
