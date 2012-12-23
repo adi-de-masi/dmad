@@ -35,12 +35,14 @@ class App extends Spine.Controller
           @dispatch "#landing", jqmData
           e.preventDefault()
       # url containing a hash was entered by hand
-      else if hashRegexp.test jqmData?.toPage?.context?.URL and not jqmData.ficken
+      else if hashRegexp.test(jqmData?.toPage?.context?.URL) and jqmData.options?.redirected is undefined
           target = @extractTarget jqmData.toPage.context.URL
           jqmData.toPage = target
-          jqmData.ficken = true
+          jqmData.options.redirected = true
           @dispatch target, jqmData
           e.preventDefault()
+      else
+        @log "siechnomal"
 
 
   extractTarget: (urlString) ->
@@ -59,7 +61,7 @@ class App extends Spine.Controller
     @log "going to #{url.href}"
     if target is "#beast"
       @changePage @beasts, jqmData
-    else if target is "#clocks"
+    else if target is "#clock"
       @changePage @clocks, jqmData
     else if target is "#landing"
       @changePage @landings, jqmData
