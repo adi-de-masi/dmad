@@ -5,7 +5,13 @@ class SmoothIce extends Spine.Controller
   window.smoothiceconf = {}
   window.smoothiceconf.draw_objects = "dots"
   window.smoothiceconf.vel = 3
-  window.smoothiceconf.accel= -0.0003
+  window.smoothiceconf.accel = 9
+
+  setDefaults: ->
+    window.smoothiceconf = {}
+    window.smoothiceconf.draw_objects = "dots"
+    window.smoothiceconf.vel = 3
+    window.smoothiceconf.accel = 1
  
   elements:
     "#header": "header",
@@ -13,14 +19,19 @@ class SmoothIce extends Spine.Controller
     "#smoothice_resetButton": "resetButton"
 
   events:
-    "click #dotOrCircleButton": 'toggleDotsAndCircles',
+    "change #flipToggleSwitch": 'toggleDotsAndCircles',
     'change #velocitySlider': 'velocityChanged',
     'change #accelerationSlider': 'accelChanged',
     'change #colorSlider': 'colorChanged',
-    "click #smoothice_resetButton": "reset"
+    "click #smoothice_resetButton": "reset",
+    "click #smoothice_resetColorButton": "resetColor"
 
   reset: ->
+    @resetEvent = true
     @render()
+
+  resetColor: ->
+    window.smoothiceconf.hue = null
 
   pauseOrContinue: (processing) ->
     if @running
@@ -33,28 +44,19 @@ class SmoothIce extends Spine.Controller
       pauseOrContinueLabel = "stop"
     @el.find('#smoothice_pauseOrContinueButton').find('.ui-btn-text').text(pauseOrContinueLabel)
 
-  
   toggleDotsAndCircles: ->
     if window.smoothiceconf.draw_objects is "dots"
       window.smoothiceconf.draw_objects = "circles"
-      window.smoothiceconf.vel /= 100
-      window.smoothiceconf.accel *= -100
       @el.find('#dotOrCircleButton').find('.ui-btn-text').text('.')
     else
       window.smoothiceconf.draw_objects = "dots"
-      window.smoothiceconf.vel *= 100
-      window.smoothiceconf.accel /= -100
       @el.find('#dotOrCircleButton').find('.ui-btn-text').text('o')
 
   velocityChanged: (event) ->
     window.smoothiceconf.vel = event.target.value
 
   accelChanged: (event) ->
-    if window.smoothiceconf.draw_objects is "dots"
-      tmp = event.target.value * -0.0003
-    else 
-      tmp = event.target.value * 0.0003
-    window.smoothiceconf.accel = tmp
+    window.smoothiceconf.accel = event.target.value
 
   colorChanged: (event) ->
     window.smoothiceconf.hue = event.target.value
@@ -71,13 +73,17 @@ class SmoothIce extends Spine.Controller
     "continue"
 
   render: ->
+    @setDefaults()
     @headers.active()
     @el.find('#content').html require('views/smooth_ice_canvas')(@)
     canvas = document.getElementById 'canvas'
     @processing = new Processing canvas, @coffee_draw
     @el.find('#smoothice_pauseOrContinueButton').find('ui-label').text('stop')
     @el.find('#smoothice_pauseOrContinueButton').bind('click', => @pauseOrContinue(@processing))
-    @el.trigger "create"
+    if @resetEvent
+      @el.trigger "create"
+    else
+      @el.trigger "refresh"
     
   getDotOrCircle: ->
     if window.smoothiceconf.draw_objects is 'dots'
@@ -97,6 +103,7 @@ class SmoothIce extends Spine.Controller
       
       x = p5.noise(x_off) * p5.width
       y = p5.noise(y_off) * p5.height
+      survivors = []
       
       if p5.frameCount % 2 == 0
         bean = new Bean(p5, {
@@ -106,8 +113,11 @@ class SmoothIce extends Spine.Controller
           y_off: y_off
         })
         @beans.push(bean)
-      
-      bean.draw() for bean in @beans
+      for bean in @beans
+        if bean.isDrawable()
+          bean.draw(@p5) 
+          survivors.push bean
+      @beans = survivors
 
     p5.touchMove = (e) -> 
       for touch in e.touches
@@ -120,13 +130,14 @@ class SmoothIce extends Spine.Controller
           y: y
           x_off: x_off
           y_off: y_off
-          vel: window.smoothiceconf.vel
+          #vel: window.smoothiceconf.vel
         })
         @beans.push(bean)
 
     p5.mouseMoved= (e) -> 
       x = p5.mouseX
       y = p5.mouseY
+      console.log "mouse event: x=#{x}, y=#{y}"
       x_off = p5.frameCount * 0.0003
       y_off = x_off + 20
 
@@ -135,15 +146,14 @@ class SmoothIce extends Spine.Controller
         y: y
         x_off: x_off
         y_off: y_off
-        vel: window.smoothiceconf.vel
+        #vel: window.smoothiceconf.vel
       })
       @beans.push(bean)
-      console.log "drawed with vel=#{window.smoothiceconf.vel} and accel=#{window.smoothiceconf.accel}"
+      #console.log "drawed with vel=#{window.smoothiceconf.vel} and accel=#{window.smoothiceconf.accel}"
 
  
      
 class Bean
-  @drawCount = 0
 
   constructor: (@p5, opts) ->
     @x = opts.x
@@ -154,13 +164,58 @@ class Bean
 
     @vel = opts.vel || 3
     @accel = opts.accel || -0.003
+
+  isDrawable: ->
+    @vel > 0
     
   draw: () ->
-    return unless @vel > 0
-    
     @x_off += 0.007
     @y_off += 0.007
     
+   
+    #console.log "#{@x}/#{@y} drawing point with vel=#{@vel} and accel=#{@accel}"
+    if window.smoothiceconf.draw_objects is "dots"
+      @drawPoint(@x_off, @y_off)
+    else if window.smoothiceconf.draw_objects is "circles"
+      @drawCircle(@x_off, @y_off)
+
+
+  drawPoint: (x_off, y_off)->
+    @vel = window.smoothiceconf.vel
+    @accel = @getPointAccel()
+    
+    @vel += @accel
+    @x += @p5.noise(@x_off) * @vel - @vel/2
+    @y += @p5.noise(@y_off) * @vel - @vel/2
+    
+    @set_color("point")
+    @p5.point(@x, @y)
+
+  getPointAccel: ->
+    cur = window.smoothiceconf.accel
+    if cur is "1"
+      return -0.003
+    if cur is "2"
+      return -0.03
+    if cur is "3"
+      return -0.3
+    if cur is "4"
+      return 0.003
+    if cur is "5"
+      return 0.03
+    if cur is "6"
+      return 0.3
+    if cur is "7"
+      return 1
+    if cur is "8"
+      return 1.5
+    if cur is "9"
+      return 2
+    if cur is "10"
+      return 3
+
+
+  drawCircle: ->
     @vel = window.smoothiceconf.vel
     @accel = window.smoothiceconf.accel
     
@@ -168,23 +223,18 @@ class Bean
     @x += @p5.noise(@x_off) * @vel - @vel/2
     @y += @p5.noise(@y_off) * @vel - @vel/2
     
-    @set_color()
-    if window.smoothiceconf.draw_objects is "dots"
-      @p5.point(@x, @y)
-    else if window.smoothiceconf.draw_objects is "circles"
-      @p5.ellipse(@x, @y, 1,1)
+    @set_color("fill")
+    @p5.ellipse(@x, @y, 1, 1)
     
-    
-  set_color: () ->
+  set_color: (mode) ->
     @p5.colorMode(@p5.HSB, 360, 100, 100)
-    
     h = window.smoothiceconf.hue || @p5.noise((@x_off+@y_off)/2)*360
     s = 100
     b = 100
     a = 4
-    if window.smoothiceconf.draw_objects is "dots"    
-      @p5.stroke(h, s, b, a)
-    else if window.smoothiceconf.draw_objects is "circles"
+    if mode is "fill"
       @p5.fill(h,s,b)
-    
+    else
+      @p5.stroke(h, s, b, a)
+
 module.exports = SmoothIce

@@ -4,12 +4,13 @@
   .sidebox.rightside
     %a{:href=>"#", :id=>"smoothice_resetButton", :data-role=>"button", :data-inline=>"true"} reset
     %a{:href=>"#", :id=>"smoothice_pauseOrContinueButton", :data-role=>"button", :data-inline=>"true", :data-theme=>"b"}= @getPauseOrContinue()
-    %label{:for=>"dotOrCircleButton"}Dots or Circles?
-    %a{:href=>"#", :id=>"dotOrCircleButton", :data-role=>"button", :data-inline=>"true", :data-mini=>"true"}= @getDotOrCircle()
+    %select{:id=>"flipToggleSwitch", :data-role=>"slider", :data-inline=>"true", :data-mini=>"true"}
+      %option{:value=>"dots"}dots
+      %option{:value=>"circles"}circles
     %label{:for=>"velocitySlider"}Velocity
-    %input{:type=>"range", :name=>"velocitySlider", :id=>"velocitySlider", :value=>"1", :min=>"1", :max=>"3"}
+    %input{:type=>"range", :name=>"velocitySlider", :id=>"velocitySlider", :value=>"1", :min=>"1", :max=>"3", :data-mini=>"true"}
     %label{:for=>"accelSlider"}Acceleration
-    %input{:type=>"range", :name=>"accelerationSlider", :id=>"accelerationSlider", :value=>"1", :min=>"1", :max=>"10000"}
+    %input{:type=>"range", :name=>"accelerationSlider", :id=>"accelerationSlider", :value=>"9", :min=>"1", :max=>"10", :data-mini=>"true"}
     %label{:for=>"colorSlider"}Color
-    %input{:type=>"range", :name=>"colorSlider", :id=>"colorSlider", :value=>"256", :min=>"1", :max=>"256"}
-
+    %input{:type=>"range", :name=>"colorSlider", :id=>"colorSlider", :value=>"256", :min=>"1", :max=>"256", :data-mini=>"true"}
+    %a{:href=>"#", :id=>"smoothice_resetColorButton", :data-role=>"button", :data-inline=>"true"} autocolor 
