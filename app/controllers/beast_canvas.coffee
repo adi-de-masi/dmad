@@ -16,7 +16,7 @@ class BeastCanvas extends Spine.Controller
       p.noStroke()
       window.world = world = new World(p)
       window.beasts = beasts = (new Beast(p) for i in [1..5])
-      p.makeFood(500)
+      p.makeFood(50000)
 
     p.draw = () ->
       #p.makeFood(50)
@@ -27,6 +27,7 @@ class BeastCanvas extends Spine.Controller
       for beast in window.beasts
         survivors.push beast.move()
         beast.draw()
+        console.log "there are #{survivors.length} survivors"
 
       survivors = $.map(survivors, (x) -> x) # flatten
       beasts = survivors.filter () -> true # filter nulls
@@ -121,7 +122,7 @@ class Beast
     @y = @p.height if @y < 0
     @power += world.eat(@x, @y)
     return null if @power == 0 # died
-    return @split() if @power > 1000 and @age > 500
+    return @split() if @power > 500 and @age > 150
     @ # simply survived
   draw: ->
     @p.fill(@p.color(@age / 5, 100, 100))
