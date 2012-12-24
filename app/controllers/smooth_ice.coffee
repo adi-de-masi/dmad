@@ -5,13 +5,13 @@ class SmoothIce extends Spine.Controller
   window.smoothiceconf = {}
   window.smoothiceconf.draw_objects = "dots"
   window.smoothiceconf.vel = 3
-  window.smoothiceconf.accel = 9
+  window.smoothiceconf.accel = 10
 
   setDefaults: ->
     window.smoothiceconf = {}
     window.smoothiceconf.draw_objects = "dots"
     window.smoothiceconf.vel = 3
-    window.smoothiceconf.accel = 1
+    window.smoothiceconf.accel = 10
  
   elements:
     "#header": "header",
