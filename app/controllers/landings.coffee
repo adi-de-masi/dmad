@@ -7,24 +7,15 @@ class Landings extends Spine.Controller
     "#header": "header",
     "#content": "content",
 
-  events:
-    "click .front": "toggleCard",
-    "click .back": "toggleCard"
-
-  toggleCard: ->
-    @el.find('.front').toggle()
-    @el.find('.back').toggle()
-
   constructor: ->
     super
-    @headers = new Headers el:@header, title: "Merry Christmas Lucy!"
+    @headers = new Headers el:@header, title: "Welcome to my processing playground"
     @menus = new Menus el:@content
     @active @render
 
   render: ->
     @headers.active()
     @menus.active()
-    $card = @el.find('#card')
 
     
 module.exports = Landings
